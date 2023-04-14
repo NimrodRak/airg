@@ -17,16 +17,16 @@ def get_objects(c, limit, query={}):
     return [normalize_id(doc) for doc in c.find(query, limit=limit)]
 
 
-def hash_password(password, salt):
-    return hashlib.md5(password + salt).digest()
+def hash_password(password: str, salt: bytes) -> bytes:
+    return hashlib.md5(password.encode() + salt).digest()
 
 
 def validate_email(email):
     return re.match(r"[^@]+@[^@]+\.[^@]+", email)
 
 
-def verify_id(tour):
-    return all(c in string.hexdigits for c in tour.guide_id) and len(tour.guide_id) == 24
+def verify_id(id):
+    return all(c in string.hexdigits for c in id) and len(id) == 24
 
 
 def are_intersecting(reservation_tour: datetime.datetime, rhs_tour: datetime.datetime):
@@ -57,3 +57,7 @@ def get_user(users, user_id, password):
     if user.hashed_password != hash_password(password, user.salt):
         raise HTTPException(status_code=400, detail="Invalid password")
     return user
+
+
+def send_mail(email, subject, body=""):
+    print("Sent email to", email, "with subject", subject, "and body", body)

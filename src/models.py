@@ -18,13 +18,31 @@ class PeriodicSchedule(BaseModel):
         return v
 
 
-class Guide(BaseModel):
+class User(BaseModel):
     name: str
     email: EmailStr
     phone: str
+
+
+class RegisterRequest(User):
+    password: str
+
+
+class UserInDB(User):
+    hashed_password: bytes
+    salt: bytes
+    reservation_ids: list[str] = []
+
+
+class Guide(BaseModel):
+    user_id: str
     languages: list[str]
-    rating: float
+    rating: float = None
     bio: str
+
+
+class GuideRegisterRequest(Guide):
+    password: str
 
 
 class Tour(BaseModel):
@@ -61,22 +79,16 @@ class Tour(BaseModel):
 class Reservation(BaseModel):
     date: datetime.datetime
     tour_id: str
+    review_id: str
 
 
-class User(BaseModel):
-    name: str
-    email: EmailStr
-    phone: str
-    reservations: list[Reservation]
-
-
-class UserInDB(User):
-    hashed_password: str
-    salt: str
+class ReservationInDB(Reservation):
+    notified_participants: bool = False
+    review_requests: list[datetime.datetime] = []
 
 
 class Review(BaseModel):
     rating: float
     body: str
-    author: User
+    author_id: str
     date: datetime.date

@@ -2,3 +2,5 @@ celery
 fastapi
 pydantic
 pymongo
+
+pytest
